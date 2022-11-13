@@ -1,0 +1,126 @@
+{
+    "_comment": "DO NOT EDIT: FILE GENERATED AUTOMATICALLY BY PTERODACTYL PANEL - PTERODACTYL.IO",
+    "meta": {
+        "version": "PTDL_v2",
+        "update_url": null
+    },
+    "exported_at": "2022-11-13T11:25:33-05:00",
+    "name": "SPKCC NODE",
+    "author": "chisdeal2014@hotmail.com",
+    "description": "SPKCC Node Crypto System",
+    "features": null,
+    "docker_images": {
+        "ghcr.io\/parkervcp\/yolks:nodejs_17": "ghcr.io\/parkervcp\/yolks:nodejs_17",
+        "ghcr.io\/parkervcp\/yolks:nodejs_16": "ghcr.io\/parkervcp\/yolks:nodejs_16",
+        "ghcr.io\/parkervcp\/yolks:nodejs_15": "ghcr.io\/parkervcp\/yolks:nodejs_15",
+        "ghcr.io\/parkervcp\/yolks:nodejs_14": "ghcr.io\/parkervcp\/yolks:nodejs_14",
+        "ghcr.io\/parkervcp\/yolks:nodejs_12": "ghcr.io\/parkervcp\/yolks:nodejs_12"
+    },
+    "file_denylist": [],
+    "startup": "if [[ -d .git ]] && [[ {{AUTO_UPDATE}} == \"1\" ]]; then git pull; fi; if [[ ! -z ${NODE_PACKAGES} ]]; then \/usr\/local\/bin\/npm install ${NODE_PACKAGES}; fi; if [[ ! -z ${UNNODE_PACKAGES} ]]; then \/usr\/local\/bin\/npm uninstall ${UNNODE_PACKAGES}; fi; if [ -f \/home\/container\/package.json ]; then \/usr\/local\/bin\/npm install; fi; \/usr\/local\/bin\/node \/home\/container\/{{JS_FILE}}",
+    "config": {
+        "files": "{\r\n    \".env\": {\r\n        \"parser\": \"file\",\r\n        \"find\": {\r\n            \"account\": \"account={{server.build.env.account}}\",\r\n            \"active\": \"active={{server.build.env.active}}\",\r\n            \"domain\": \"domain={{server.build.env.domain}}\",\r\n            \"PORT\": \"PORT={{server.build.default.port}}\",\r\n            \"ipfshost\": \"ipfshost={{server.build.env.ipfshost}}\",\r\n            \"ipfsprotocol\": \"ipfsprotocol={{server.build.env.ipfsprotocol}}\",\r\n            \"ipfsport\": \"ipfsport={{server.build.env.ipfsport}}\"\r\n        }\r\n    }\r\n}",
+        "startup": "{\r\n    \"done\": \"change this part\"\r\n}",
+        "logs": "{}",
+        "stop": "^^C"
+    },
+    "scripts": {
+        "installation": {
+            "script": "#!\/bin\/bash\r\n# NodeJS Bot Installation Script\r\n#\r\n# Server Files: \/mnt\/server\r\napt update\r\napt install -y git curl jq file unzip make gcc g++ python python-dev libtool\r\nmkdir -p \/mnt\/server\r\ncd \/mnt\/server\r\nif [ \"${USER_UPLOAD}\" == \"true\" ] || [ \"${USER_UPLOAD}\" == \"1\" ]; then\r\necho -e \"assuming user knows what they are doing have a good day.\"\r\nexit 0\r\nfi\r\n## add git ending if it's not on the address\r\nGIT_ADDRESS=https:\/\/github.com\/spknetwork\/honeycomb-spkcc.git\r\n## pull git js repo\r\nif [ \"$(ls -A \/mnt\/server)\" ]; then\r\necho -e \"\/mnt\/server directory is not empty.\"\r\nif [ -d .git ]; then\r\necho -e \".git directory exists\"\r\nif [ -f .git\/config ]; then\r\necho -e \"loading info from git config\"\r\nORIGIN=$(git config --get remote.origin.url)\r\nelse\r\necho -e \"files found with no git config\"\r\necho -e \"closing out without touching things to not break anything\"\r\nexit 10\r\nfi\r\nfi\r\nif [ \"${ORIGIN}\" == \"${GIT_ADDRESS}\" ]; then\r\necho \"pulling latest from github\"\r\ngit pull\r\nfi\r\nelse\r\necho -e \"\/mnt\/server is empty.\\ncloning files into repo\"\r\nif [ -z ${BRANCH} ]; then\r\necho -e \"cloning default branch\"\r\ngit clone ${GIT_ADDRESS} .\r\nelse\r\necho -e \"cloning ${BRANCH}'\"\r\ngit clone --single-branch --branch ${BRANCH} ${GIT_ADDRESS} .\r\nfi\r\nfi\r\necho \"Installing nodejs packages\"\r\nif [[ ! -z ${NODE_PACKAGES} ]]; then\r\n\/usr\/local\/bin\/npm install ${NODE_PACKAGES}\r\nfi\r\nif [ -f \/mnt\/server\/package.json ]; then\r\n\/usr\/local\/bin\/npm install --production\r\nfi\r\nif [ -e .env ]; then\r\necho \"Skipping Creating default ENV File\"\r\nelse\r\necho \"Creating ENV default config\"\r\necho 'account=' > .env\r\necho 'active=' >> .env\r\necho 'domain=' >> .env\r\necho 'PORT=' >> .env\r\necho 'ipfshost=' >> .env\r\necho 'ipfsprotocol=' >> .env\r\necho 'ipfsport=' >> .env\r\nfi\r\necho -e \"install complete\"\r\nexit 0",
+            "container": "node:14-buster-slim",
+            "entrypoint": "bash"
+        }
+    },
+    "variables": [
+        {
+            "name": "account",
+            "description": "Your Hive Account",
+            "env_variable": "account",
+            "default_value": "yournamehere",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "required|string|max:255",
+            "field_type": "text"
+        },
+        {
+            "name": "active",
+            "description": "Your Hive Active Key",
+            "env_variable": "active",
+            "default_value": "YOUR HIVE ACTIVE KEY",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "required|string|max:255",
+            "field_type": "text"
+        },
+        {
+            "name": "domain",
+            "description": "Your Domain",
+            "env_variable": "domain",
+            "default_value": "DOMAIN HERE",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "required|string|max:255",
+            "field_type": "text"
+        },
+        {
+            "name": "ipfshost",
+            "description": "",
+            "env_variable": "ipfshost",
+            "default_value": "100.90.165.86",
+            "user_viewable": false,
+            "user_editable": false,
+            "rules": "required|string",
+            "field_type": "text"
+        },
+        {
+            "name": "ipfsprotocol",
+            "description": "",
+            "env_variable": "ipfsprotocol",
+            "default_value": "http",
+            "user_viewable": false,
+            "user_editable": false,
+            "rules": "required|string",
+            "field_type": "text"
+        },
+        {
+            "name": "ipfsport",
+            "description": "",
+            "env_variable": "ipfsport",
+            "default_value": "5001",
+            "user_viewable": false,
+            "user_editable": false,
+            "rules": "required|numeric",
+            "field_type": "text"
+        },
+        {
+            "name": "Auto Update",
+            "description": "Pull the latest files on startup when using a GitHub repo.",
+            "env_variable": "AUTO_UPDATE",
+            "default_value": "0",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "required|boolean",
+            "field_type": "text"
+        },
+        {
+            "name": "JS File",
+            "description": "The file that starts the Node.",
+            "env_variable": "JS_FILE",
+            "default_value": "index.js",
+            "user_viewable": true,
+            "user_editable": false,
+            "rules": "required|string",
+            "field_type": "text"
+        },
+        {
+            "name": "User Uploaded Files",
+            "description": "Skip all the install stuff if you are letting a user upload files.\r\n\r\n0 = false (default)\r\n1 = true",
+            "env_variable": "USER_UPLOAD",
+            "default_value": "0",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "required|bool",
+            "field_type": "text"
+        }
+    ]
+}
